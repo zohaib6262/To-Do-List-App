@@ -35,3 +35,5 @@ npm run dev
 #### 3: Create third component of "TodoItem" (children of TodoList for making the code more efficient)
 
 #### 4: Create fourth compoent of "No Todos" (that will be display when there will be no todos)
+
+#### 5: Create fifth component of "Todo Filter" (acheiveing the filtration like , completed,pending,or all todos)

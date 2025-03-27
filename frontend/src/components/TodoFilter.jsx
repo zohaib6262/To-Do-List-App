@@ -11,13 +11,14 @@ const TodoFilter = ({ setFilterName, filterName }) => {
       </button>
       <button
         onClick={() => setFilterName("pending")}
-        className={`button ${filterName === "completed" && "completed"}`}
+        className={`button ${filterName === "pending" && "pending"}`}
       >
+        {" "}
         Pending
       </button>
       <button
         onClick={() => setFilterName("completed")}
-        className={`button ${filterName === "pending" && "pending"}`}
+        className={`button ${filterName === "completed" && "completed"}`}
       >
         Completed
       </button>
