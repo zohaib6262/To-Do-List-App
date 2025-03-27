@@ -51,3 +51,11 @@ npm install bcryptjs
 ```bash
 touch .gitignore
 ```
+
+### Step-5
+
+- Create `.enve` file for Database Creadentials and use for the store enviornment variables:
+
+```bash
+touch .evn
+```
