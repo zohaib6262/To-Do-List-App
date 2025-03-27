@@ -52,14 +52,30 @@ body {
   text-decoration: line-through;
   color: #bbb;
 }
-.todo-item button {
+.todo-completed {
+  text-decoration: line-through;
+  color: #bbb;
+}
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+.btn-update {
   padding: 9px;
   border: none;
   border-radius: 7px;
-}
-.todo-item button:hover {
-  padding: 12px;
   background-color: #508ccd;
+  color: white;
+}
+.btn:hover {
+  padding: 10px;
+}
+.btn-delete {
+  padding: 9px;
+  border: none;
+  border-radius: 7px;
+  background-color: rgb(199, 86, 86);
   color: white;
 }
 

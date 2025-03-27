@@ -37,3 +37,8 @@ npm run dev
 #### 4: Create fourth compoent of "No Todos" (that will be display when there will be no todos)
 
 #### 5: Create fifth component of "Todo Filter" (acheiveing the filtration like , completed,pending,or all todos)
+
+#### 6:Now, add a functionality for the updating todo in "App.jsx"
+
+- First Create a null state and add the function to get state up lifting.
+- Secondly, pass this function to `TodoItem` and pass the state to the `TodoForm` component.

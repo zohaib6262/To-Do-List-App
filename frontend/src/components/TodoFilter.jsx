@@ -1,29 +1,28 @@
 import React from "react";
 
-const TodoFilter = ({ setFilterName, filterName }) => {
+function TodoFilter({ setFilter, filterName }) {
   return (
     <div className="todo-filter">
       <button
-        onClick={() => setFilterName("all")}
+        onClick={() => setFilter("all")}
         className={`button ${filterName === "all" && "all"}`}
       >
         All
       </button>
       <button
-        onClick={() => setFilterName("pending")}
+        onClick={() => setFilter("pending")}
         className={`button ${filterName === "pending" && "pending"}`}
       >
-        {" "}
         Pending
       </button>
       <button
-        onClick={() => setFilterName("completed")}
+        onClick={() => setFilter("completed")}
         className={`button ${filterName === "completed" && "completed"}`}
       >
         Completed
       </button>
     </div>
   );
-};
+}
 
 export default TodoFilter;

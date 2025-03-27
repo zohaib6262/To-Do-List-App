@@ -1,19 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const TodoForm = ({ addTodo }) => {
+function TodoForm({ addTodo, updateTodo, todoToEdit }) {
   const [todoName, setTodoName] = useState("");
+
+  useEffect(() => {
+    if (todoToEdit) {
+      setTodoName(todoToEdit.name);
+    }
+  }, [todoToEdit]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!todoName) {
-      return;
-    }
-    console.log("Todo name", todoName);
+    if (!todoName) return;
 
-    addTodo({
-      id: Date.now(),
-      name: todoName,
-      completed: false,
-    });
+    if (todoToEdit) {
+      updateTodo({
+        ...todoToEdit,
+        name: todoName,
+      });
+    } else {
+      addTodo({
+        id: Date.now(),
+        name: todoName,
+        completed: false,
+      });
+    }
+
     setTodoName("");
   };
 
@@ -23,11 +35,11 @@ const TodoForm = ({ addTodo }) => {
         type="text"
         value={todoName}
         onChange={(e) => setTodoName(e.target.value)}
-        placeholder="Enter new todo"
+        placeholder={todoToEdit ? "Edit todo" : "Enter new todo"}
       />
-      <button type="submit">Add Todo</button>
+      <button type="submit">{todoToEdit ? "Update Todo" : "Add Todo"}</button>
     </form>
   );
-};
+}
 
 export default TodoForm;

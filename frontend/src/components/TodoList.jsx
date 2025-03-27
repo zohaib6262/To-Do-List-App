@@ -1,13 +1,10 @@
 import React from "react";
 import TodoItem from "./TodoItem";
+import NoTodos from "./NoTodos";
 
-const TodoList = ({ todos, toggleTodoCompletion, deleteTodo }) => {
+function TodoList({ todos, toggleTodoCompletion, deleteTodo, setTodoToEdit }) {
   if (todos.length === 0 || !todos) {
-    return (
-      <div className="no-todos">
-        <h3>There is no todo...</h3>
-      </div>
-    );
+    return <NoTodos />;
   }
   return (
     <div className="todo-list">
@@ -17,10 +14,11 @@ const TodoList = ({ todos, toggleTodoCompletion, deleteTodo }) => {
           todo={todo}
           toggleTodoCompletion={toggleTodoCompletion}
           deleteTodo={deleteTodo}
+          setTodoToEdit={setTodoToEdit}
         />
       ))}
     </div>
   );
-};
+}
 
 export default TodoList;
