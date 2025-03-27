@@ -25,3 +25,7 @@ Start the Server/Run project
 ```bash
 npm run dev
 ```
+
+## Create a folder name of this "components" in src
+
+#### Create firstly a TodoForm component
