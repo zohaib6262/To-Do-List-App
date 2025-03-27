@@ -6,13 +6,14 @@ body {
 
 .mainApp {
   max-width: 100%;
-  height: auto;
+  margin: auto;
 }
 .card {
   max-width: 40%;
-  margin: 0 auto;
+  margin: auto;
   background-color: white;
   padding: 20px;
+  border-radius: 20px;
 }
 .todo-form {
   display: flex;
@@ -44,15 +45,55 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #ddd;
 }
 .todo-item .completed {
   text-decoration: line-through;
   color: #bbb;
 }
+.todo-item button {
+  padding: 9px;
+  border: none;
+  border-radius: 7px;
+}
+.todo-item button:hover {
+  padding: 12px;
+  background-color: #508ccd;
+  color: white;
+}
+
 .no-todos {
   text-align: center;
+}
+.todo-filter {
+  display: flex;
+  justify-content: space-between;
+}
+.todo-filter .button {
+  border: none;
+  border-radius: 8px;
+}
+.todo-filter .all {
+  background-color: #0056b3;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+.todo-filter .completed {
+  background-color: #508ccd;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+.todo-filter .pending {
+  background-color: #0056b3;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
 }
 .appTitle {
   text-align: center;
