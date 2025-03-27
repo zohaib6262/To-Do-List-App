@@ -28,4 +28,10 @@ npm run dev
 
 ## Create a folder name of this "components" in src
 
-#### Create firstly a TodoForm component
+#### 1: Create firstly a "TodoForm" component
+
+#### 2: Create second component of "TodoList" (for viewing all todos)
+
+#### 3: Create third component of "TodoItem" (children of TodoList for making the code more efficient)
+
+#### 4: Create fourth compoent of "No Todos" (that will be display when there will be no todos)

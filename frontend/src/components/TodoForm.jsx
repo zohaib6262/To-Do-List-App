@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TodoForm = () => {
+const TodoForm = ({ addTodo }) => {
   const [todoName, setTodoName] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -8,6 +8,12 @@ const TodoForm = () => {
       return;
     }
     console.log("Todo name", todoName);
+
+    addTodo({
+      id: Date.now(),
+      name: todoName,
+      completed: false,
+    });
     setTodoName("");
   };
 
