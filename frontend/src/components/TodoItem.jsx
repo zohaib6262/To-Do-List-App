@@ -4,7 +4,7 @@ const TodoItem = ({
   todo,
   toggleTodoCompletion,
   deleteTodo,
-  setTodoToEdit,
+  setIsEditTodo,
 }) => {
   console.log("Todo", todo);
 
@@ -20,14 +20,18 @@ const TodoItem = ({
       </span>
       <div className="btn-container">
         <button
-          onClick={() => setTodoToEdit(todo)}
+          onClick={() => setIsEditTodo(todo)}
           className="btn btn-update"
           disabled={todo.completed && true}
         >
           Update
         </button>
 
-        <button onClick={() => deleteTodo(todo.id)} className="btn btn-delete">
+        <button
+          onClick={() => deleteTodo(todo.id)}
+          className="btn btn-delete"
+          disabled={todo.completed && true}
+        >
           Delete
         </button>
       </div>

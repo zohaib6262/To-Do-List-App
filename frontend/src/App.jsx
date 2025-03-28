@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import TodoFilter from "./components/TodoFilter";
@@ -10,9 +10,21 @@ function App() {
   const [filter, setFilter] = useState("all");
   const [todoToEdit, setTodoToEdit] = useState(null);
 
-  const addTodo = (todo) => {
-    setTodos([...todos, todo]);
-  };
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/todos", {
+          method: "GET",
+        });
+        const data = await response.json();
+        console.log("Data", data);
+        setTodos(data);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    fetchTodos();
+  }, []);
 
   const updateTodo = (updatedTodo) => {
     setTodos(
@@ -43,13 +55,10 @@ function App() {
     <div className="mainApp">
       <div className="card">
         <h1 className="appTitle">To-Do List App</h1>
-        <TodoForm
-          addTodo={addTodo}
-          updateTodo={updateTodo}
-          todoToEdit={todoToEdit}
-        />
+        <TodoForm updateTodo={updateTodo} todoToEdit={todoToEdit} />
         <TodoFilter setFilter={setFilter} filterName={filter} />
         <TodoList
+          setTodos={setTodos}
           todos={filteredTodos}
           toggleTodoCompletion={toggleTodoCompletion}
           deleteTodo={deleteTodo}

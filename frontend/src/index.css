@@ -28,7 +28,7 @@ body {
 }
 .todo-form button {
   padding: 10px 15px;
-  background-color: #007bff;
+  background-color: #0056b3;
   color: white;
   border: none;
   border-radius: 10px;
@@ -45,7 +45,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 10px;
+  padding: 10px;
   border-bottom: 1px solid #ddd;
 }
 .todo-item .completed {
@@ -59,6 +59,8 @@ body {
 .btn-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   gap: 15px;
 }
 .btn-update {
@@ -91,7 +93,7 @@ body {
   border-radius: 8px;
 }
 .todo-filter .all {
-  background-color: #0056b3;
+  background-color: #508ccd;
   padding: 10px;
   border: none;
   border-radius: 8px;
@@ -105,7 +107,7 @@ body {
   color: white;
 }
 .todo-filter .pending {
-  background-color: #0056b3;
+  background-color: #508ccd;
   padding: 10px;
   border: none;
   border-radius: 8px;

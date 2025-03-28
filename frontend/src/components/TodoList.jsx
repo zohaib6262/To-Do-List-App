@@ -2,7 +2,7 @@ import React from "react";
 import TodoItem from "./TodoItem";
 import NoTodos from "./NoTodos";
 
-function TodoList({ todos, toggleTodoCompletion, deleteTodo, setTodoToEdit }) {
+function TodoList({ todos, toggleTodoCompletion, deleteTodo, setIsEditTodo }) {
   if (todos.length === 0 || !todos) {
     return <NoTodos />;
   }
@@ -14,7 +14,7 @@ function TodoList({ todos, toggleTodoCompletion, deleteTodo, setTodoToEdit }) {
           todo={todo}
           toggleTodoCompletion={toggleTodoCompletion}
           deleteTodo={deleteTodo}
-          setTodoToEdit={setTodoToEdit}
+          setIsEditTodo={setIsEditTodo}
         />
       ))}
     </div>

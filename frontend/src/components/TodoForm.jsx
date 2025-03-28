@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-function TodoForm({ addTodo, updateTodo, todoToEdit }) {
+const TodoForm = ({ addTodo, isEditTodo, updateTodo }) => {
   const [todoName, setTodoName] = useState("");
-
   useEffect(() => {
-    if (todoToEdit) {
-      setTodoName(todoToEdit.name);
+    if (isEditTodo) {
+      setTodoName(isEditTodo.name);
     }
-  }, [todoToEdit]);
+  }, [isEditTodo]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!todoName) return;
 
-    if (todoToEdit) {
+    if (!todoName) {
+      return;
+    }
+
+    if (isEditTodo) {
       updateTodo({
-        ...todoToEdit,
+        ...isEditTodo,
         name: todoName,
       });
     } else {
+      console.log("FIjkasdljfl;a", todoName);
       addTodo({
         id: Date.now(),
         name: todoName,
         completed: false,
       });
     }
+    console.log("Todo", todoName);
 
     setTodoName("");
   };
@@ -34,12 +38,15 @@ function TodoForm({ addTodo, updateTodo, todoToEdit }) {
       <input
         type="text"
         value={todoName}
-        onChange={(e) => setTodoName(e.target.value)}
-        placeholder={todoToEdit ? "Edit todo" : "Enter new todo"}
+        onChange={(e) => {
+          console.log("Set name", todoName);
+          setTodoName(e.target.value);
+        }}
+        placeholder={isEditTodo ? "Edit task" : "Enter new task"}
       />
-      <button type="submit">{todoToEdit ? "Update Todo" : "Add Todo"}</button>
+      <button type="submit">{isEditTodo ? "Update Task" : "Add Task"}</button>
     </form>
   );
-}
+};
 
 export default TodoForm;
