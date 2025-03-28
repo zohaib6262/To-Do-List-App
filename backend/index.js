@@ -64,6 +64,25 @@ app.put("/todos/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+//For Delete
+app.delete("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      "DELETE FROM todos WHERE id=$1 RETURNING *",
+      [id]
+    );
+    if (result.rows.length > 0) {
+      res.json({ message: "Todo deleted" });
+    } else {
+      res.status(404).json({ error: "Todo not found" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server Running on http://localhost:${port}`);
 });
