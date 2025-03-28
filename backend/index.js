@@ -44,6 +44,26 @@ app.post("/todos", async (req, res) => {
     res.status(500).json({ error: "Internet server error" });
   }
 });
+
+//For update
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, completed } = req.body;
+    const result = await pool.query(
+      "UPDATE todos SET name=$1, completed=$2 WHERE id=$3 RETURNING *",
+      [name, completed, id] // Only this array is needed
+    );
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: "Todo not found" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server Running on http://localhost:${port}`);
 });
