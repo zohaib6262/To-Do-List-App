@@ -30,6 +30,20 @@ app.get("/todos", async (req, res) => {
   }
 });
 
+//Insert todo
+app.post("/todos", async (req, res) => {
+  try {
+    const { name, completed } = req.body;
+    const result = await pool.query(
+      "INSERT INTO todos (name,completed) VALUES ($1,$2) RETURNING*",
+      [name, completed]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internet server error" });
+  }
+});
 app.listen(port, () => {
   console.log(`Server Running on http://localhost:${port}`);
 });
