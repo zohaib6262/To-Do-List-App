@@ -26,6 +26,10 @@ function App() {
     fetchTodos();
   }, []);
 
+  const addTodo = (todo) => {
+    setTodos([...todos, todo]);
+  };
+
   const toggleTodoCompletion = (id) => {
     setTodos(
       todos.map((todo) =>
@@ -44,7 +48,7 @@ function App() {
     <div className="mainApp">
       <div className="card">
         <h1 className="appTitle">To-Do List App</h1>
-        <TodoForm todoToEdit={todoToEdit} />
+        <TodoForm todoToEdit={todoToEdit} addTodo={addTodo} />
         <TodoFilter setFilter={setFilter} filterName={filter} />
         <TodoList
           setTodos={setTodos}
