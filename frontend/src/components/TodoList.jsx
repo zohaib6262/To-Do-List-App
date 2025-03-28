@@ -5,8 +5,7 @@ import NoTodos from "./NoTodos";
 function TodoList({
   setTodos,
   toggleTodoCompletion,
-  deleteTodo,
-  setIsEditTodo,
+
   todos,
 }) {
   if (todos.length === 0 || !todos) {
@@ -20,8 +19,6 @@ function TodoList({
           key={todo.id}
           todo={todo}
           toggleTodoCompletion={toggleTodoCompletion}
-          deleteTodo={deleteTodo}
-          setIsEditTodo={setIsEditTodo}
         />
       ))}
     </div>

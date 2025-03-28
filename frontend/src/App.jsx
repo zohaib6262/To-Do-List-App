@@ -26,23 +26,12 @@ function App() {
     fetchTodos();
   }, []);
 
-  const updateTodo = (updatedTodo) => {
-    setTodos(
-      todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
-    );
-    setTodoToEdit(null);
-  };
-
   const toggleTodoCompletion = (id) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
     );
-  };
-
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   const filteredTodos = todos.filter((todo) => {
@@ -55,14 +44,12 @@ function App() {
     <div className="mainApp">
       <div className="card">
         <h1 className="appTitle">To-Do List App</h1>
-        <TodoForm updateTodo={updateTodo} todoToEdit={todoToEdit} />
+        <TodoForm todoToEdit={todoToEdit} />
         <TodoFilter setFilter={setFilter} filterName={filter} />
         <TodoList
           setTodos={setTodos}
           todos={filteredTodos}
           toggleTodoCompletion={toggleTodoCompletion}
-          deleteTodo={deleteTodo}
-          setTodoToEdit={setTodoToEdit}
         />
       </div>
     </div>

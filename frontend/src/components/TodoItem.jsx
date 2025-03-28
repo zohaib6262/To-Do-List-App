@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TodoItem = ({ todo, toggleTodoCompletion, setTodos, deleteTodo }) => {
+const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
   const [update, setUpdate] = useState(false);
   const [newName, setNewName] = useState(todo.name); // State to handle the updated name
 
@@ -21,6 +21,20 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos, deleteTodo }) => {
         )
       );
       setUpdate(false); // Close the edit input after update
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const deleteHandler = async (todo) => {
+    try {
+      const response = await fetch(`http://localhost:3000/todos/${todo.id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      console.log("Data", data);
+
+      setTodos((prevTodos) => prevTodos.filter((item) => item.id !== todo.id));
     } catch (error) {
       console.log("Error", error);
     }
@@ -60,7 +74,7 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos, deleteTodo }) => {
           {update ? "Save" : "Update"}
         </button>
 
-        <button onClick={() => deleteTodo(todo)} className="btn btn-delete">
+        <button onClick={() => deleteHandler(todo)} className="btn btn-delete">
           Delete
         </button>
       </div>
