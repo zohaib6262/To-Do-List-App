@@ -8,13 +8,7 @@ const port = 3000;
 
 //Middleware
 app.use(express.json()); //for parsing application/json
-const corsOptions = {
-  origin: "https://to-do-list-app-backend-gamma.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 //PostgeSQL pool setup
 const pool = new Pool({
