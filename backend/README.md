@@ -86,3 +86,27 @@ touch authController.js
 ### After all these , we will migrate this model for creation of table in tb
 npx sequelize-cli db:migrate
 ```
+
+## 2:Todo Model
+
+```bash
+## Create model with
+npx sequelize-cli model:generate --name Todo --attributes name:string,completed:boolean
+
+## Create folder for routes and in this create a file authrouter.js
+mkdir router
+touch todorouter.js
+
+## Create a folder for controllers for function and function for authController
+mkdir controllers
+touch todoController.js
+
+### After all these , we will migrate this model for creation of table in tb
+npx sequelize-cli db:migrate
+```
+
+#### There is create an end point for the `create-todo`.
+
+```bash
+### In this, end point it, recevices an `name` and completed:true/false
+```
