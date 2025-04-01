@@ -32,6 +32,7 @@ npm install dotenv
 npm install cors
 npm install jsonwebtoken
 npm install bcryptjs
+npm install seuelize-cli
 ```
 
 ```bash
@@ -42,6 +43,7 @@ npm install bcryptjs
 ## cors: Cross-origin resource sharing (optional but useful for frontend-backend communication)
 ## jsonwebtoken: For JWT authentication
 ## bcryptjs: For password hasing
+## sequelize-cli is a command-line tool
 ```
 
 ### Step-4:

@@ -6,11 +6,9 @@ require("dotenv").config();
 const app = express();
 const port = 3000;
 
-//Middleware
-app.use(express.json()); //for parsing application/json
+app.use(express.json());
 app.use(cors());
 
-//PostgeSQL pool setup
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
