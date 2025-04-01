@@ -12,17 +12,17 @@ function TodoForm({ addTodo }) {
         const response = await fetch(
           "http://localhost:3000/todos/create-todo",
           {
-            // Corrected URL
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
             body: JSON.stringify({ name: todoName, completed: false }),
           }
         );
         const data = await response.json();
         console.log("Data", data);
-        addTodo(data); // Update the state in App.js
+        addTodo(data);
       } catch (error) {
         console.log("Error", error);
       }
