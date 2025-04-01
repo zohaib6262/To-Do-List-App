@@ -9,14 +9,17 @@ function TodoForm({ addTodo }) {
 
     const fetchTodos = async () => {
       try {
-        const response = await fetch("http://localhost:3000/todos", {
-          // Corrected URL
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: todoName, completed: false }),
-        });
+        const response = await fetch(
+          "http://localhost:3000/todos/create-todo",
+          {
+            // Corrected URL
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: todoName, completed: false }),
+          }
+        );
         const data = await response.json();
         console.log("Data", data);
         addTodo(data); // Update the state in App.js
