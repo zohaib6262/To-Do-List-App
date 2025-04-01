@@ -1,1 +1,128 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
 
+body {
+  background: linear-gradient(
+    135deg,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 16px;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  background-color: #fff;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn {
+  padding: 14px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.toggle-form {
+  margin-left: 0.2rem;
+  color: #699ed7;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.toggle-form:hover {
+  color: #0056b3;
+}
+
+/* Additional Enhancements */
+body {
+  background: radial-gradient(
+    circle,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+}
+
+.form-container {
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
+}
+
+.input:focus {
+  border-color: #00aaff;
+  box-shadow: 0 0 8px rgba(0, 170, 255, 0.4);
+}
+
+.btn {
+  background-image: linear-gradient(45deg, #007bff, #00c6ff);
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  background-image: none;
+}
+.error {
+  color: rgb(216, 54, 54);
+  margin-top: 0.3rem;
+}
