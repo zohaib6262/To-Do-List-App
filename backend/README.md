@@ -116,3 +116,16 @@ npx sequelize-cli db:migrate
 
 - authentication is performed in the `authenticate` middleware using the JWT token from the `Authorization` header.
 - The `createTodo` endpoint is now protected, and only authenticated users can create todos
+
+### After the authentication, I create the relationship/association between user and todo.
+
+```bash
+## This relationship is that:
+## 1 to Many (relationship)
+## 1 user have many todos
+## and after this, I created a migration file for the adding the column in todo table
+## like this,
+npx sequelize-cli migration:generate --name add-userId-to-todo
+### and then add this column to the todos table in database this command like,
+npx sequelize-cli db:migrate
+```
