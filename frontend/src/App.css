@@ -124,5 +124,8 @@ body {
 }
 .error {
   color: rgb(216, 54, 54);
-  margin-top: 0.3rem;
+  margin-top: -0.8rem;
+}
+.success {
+  color: rgb(61, 147, 61);
 }

@@ -12,8 +12,11 @@ const Signup = ({ toggleForm }) => {
     password: "",
     confirmPassword: "",
   });
+  const [backendError, setBackendError] = useState("");
 
-  // Handle input changes
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
   const signUpFormHandleChange = (key, value) => {
     setSignUpForm({
       ...signUpForm,
@@ -21,9 +24,8 @@ const Signup = ({ toggleForm }) => {
     });
   };
 
-  // Form submission handler
-  const submitHandle = (e) => {
-    e.preventDefault(); // Prevent the form from reloading the page
+  const submitHandle = async (e) => {
+    e.preventDefault();
 
     let newError = {
       email: "",
@@ -31,86 +33,114 @@ const Signup = ({ toggleForm }) => {
       confirmPassword: "",
     };
 
-    // Validate Email
     if (!signUpForm.email.trim()) {
       newError.email = "Email is required";
     }
 
-    // Validate Password
     if (!signUpForm.password.trim()) {
       newError.password = "Password is required";
     }
 
-    // Validate Confirm Password
     if (signUpForm.password !== signUpForm.confirmPassword) {
       newError.confirmPassword = "Passwords do not match";
     }
 
-    // If there are any errors, update the state and return
     if (newError.email || newError.password || newError.confirmPassword) {
       setError(newError);
       return;
     }
 
-    // Clear errors and proceed if validation passes
+    setSuccessMessage("");
     setError({
       email: "",
       password: "",
       confirmPassword: "",
     });
 
-    console.log("Form Submitted:", signUpForm);
-    // You can perform your API request here (e.g., sending data to a server)
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signUpForm),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.message) {
+          setBackendError(data.message);
+        }
+
+        return;
+      }
+
+      if (response.ok) {
+        setSuccessMessage("Signup successful! You can now log in.");
+        setSignUpForm({
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        toggleForm();
+      }
+    } catch (error) {
+      setError({
+        email: "Something went wrong. Please try again later.",
+        password: "",
+        confirmPassword: "",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form className="form" onSubmit={submitHandle}>
       <h2>Sign Up</h2>
 
-      {/* Email Field */}
-      <div>
-        <input
-          type="email"
-          className="input"
-          placeholder="Email"
-          value={signUpForm.email}
-          onChange={(e) => signUpFormHandleChange("email", e.target.value)}
-        />
-        {error.email && <p className="error">*{error.email}</p>}
-      </div>
+      {successMessage && <p className="success">{successMessage}</p>}
+      {backendError && <p className="error">{backendError}</p>}
 
-      {/* Password Field */}
-      <div>
-        <input
-          type="password"
-          className="input"
-          placeholder="Password"
-          value={signUpForm.password}
-          onChange={(e) => signUpFormHandleChange("password", e.target.value)}
-        />
-        {error.password && <p className="error">*{error.password}</p>}
-      </div>
+      <input
+        type="email"
+        className="input"
+        placeholder="Email"
+        value={signUpForm.email}
+        onChange={(e) => signUpFormHandleChange("email", e.target.value)}
+      />
+      {error.email && <p className="error">*{error.email}</p>}
 
-      <div>
-        <input
-          type="password"
-          className="input"
-          placeholder="Confirm Password"
-          value={signUpForm.confirmPassword}
-          onChange={(e) =>
-            signUpFormHandleChange("confirmPassword", e.target.value)
-          }
-        />
-        {error.confirmPassword && (
-          <p className="error">*{error.confirmPassword}</p>
-        )}
-      </div>
+      <input
+        type="password"
+        className="input"
+        placeholder="Password"
+        value={signUpForm.password}
+        onChange={(e) => signUpFormHandleChange("password", e.target.value)}
+      />
+      {error.password && <p className="error">*{error.password}</p>}
 
-      <button className="btn" type="submit">
-        Sign Up
+      <input
+        type="password"
+        className="input"
+        placeholder="Confirm Password"
+        value={signUpForm.confirmPassword}
+        onChange={(e) =>
+          signUpFormHandleChange("confirmPassword", e.target.value)
+        }
+      />
+      {error.confirmPassword && (
+        <p className="error">*{error.confirmPassword}</p>
+      )}
+
+      <button className="btn" type="submit" disabled={isLoading}>
+        {isLoading ? "Signing Up..." : "Sign Up"}
       </button>
+
       <p>
-        Already have an account?{" "}
+        Already have an account?
         <span className="toggle-form" onClick={toggleForm}>
           Login
         </span>
