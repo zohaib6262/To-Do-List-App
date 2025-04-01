@@ -2,21 +2,21 @@
   "development": {
     "username": "postgres",
     "password": "zohaib123",
-    "database": "todo_app",
+    "database": "postgres",
     "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "zohaib123",
-    "database": "todo_app_test",
+    "database": "postgres",
     "host": "localhost",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "zohaib123",
-    "database": "todo_app_production",
+    "database": "postgres",
     "host": "localhost",
     "dialect": "postgres"
   }

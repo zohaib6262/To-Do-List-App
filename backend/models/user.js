@@ -1,5 +1,7 @@
 "use strict";
+const bcrypt = require("bcrypt");
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -15,22 +17,34 @@ module.exports = (sequelize, DataTypes) => {
     {
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
+        allowNull: false,
         validate: {
-          isNull: "Email is required.",
-          notEmpty: "Email cannot be empty.",
+          notEmpty: {
+            msg: "Email cannot be empty",
+          },
+          isEmail: {
+            msg: "Must be a valid email",
+          },
         },
       },
-      password: DataTypes.STRING,
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: "Password cannot be empty",
+          },
+        },
+      },
     },
     {
       sequelize,
       modelName: "User",
-      allowNull: false,
-
-      validate: {
-        notEmpty: "Name cannot be empty.",
+      hooks: {
+        beforeCreate: async (user) => {
+          user.password = await bcrypt.hash(user.password, 10);
+        },
       },
     }
   );

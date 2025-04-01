@@ -61,3 +61,28 @@ touch .gitignore
 ```bash
 touch .evn
 ```
+
+## Now generate a model
+
+```bash
+When use a sequelize-cli firstly,then run
+npx sequelize-cli init
+```
+
+## 1:User Model
+
+```bash
+## Create model with
+npx sequelize-cli model:generate --name User --attributes email:string,password:string
+
+## Create folder for routes and in this create a file authrouter.js
+mkdir router
+touch authrouter.js
+
+## Create a folder for controllers for function and function for authController
+mkdir controllers
+touch authController.js
+
+### After all these , we will migrate this model for creation of table in tb
+npx sequelize-cli db:migrate
+```
