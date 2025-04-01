@@ -108,5 +108,11 @@ npx sequelize-cli db:migrate
 #### There is create an end point for the `create-todo`.
 
 ```bash
+/todos/create-todo
 ### In this, end point it, recevices an `name` and completed:true/false
 ```
+
+#### After the create of an end point for the `create-todo`
+
+- authentication is performed in the `authenticate` middleware using the JWT token from the `Authorization` header.
+- The `createTodo` endpoint is now protected, and only authenticated users can create todos
