@@ -24,4 +24,22 @@ const createTodo = async (req, res) => {
   }
 };
 
-module.exports = { createTodo };
+const getTodos = async (req, res) => {
+  const userId = req.user.id;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User is not authenticated" });
+  }
+
+  try {
+    const todos = await Todo.findAll({ where: { userId } });
+    return res.status(200).json(todos);
+  } catch (err) {
+    console.error("Error getting Todos:", err);
+    return res.status(500).json({
+      message: err.message || "An error occurred while getting the Todos",
+    });
+  }
+};
+
+module.exports = { createTodo, getTodos };

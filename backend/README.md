@@ -129,3 +129,5 @@ npx sequelize-cli migration:generate --name add-userId-to-todo
 ### and then add this column to the todos table in database this command like,
 npx sequelize-cli db:migrate
 ```
+
+### Create an endpoint for getAllTodos from the frontend.
