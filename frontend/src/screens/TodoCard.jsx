@@ -6,18 +6,32 @@ import TodoList from "../components/TodoList";
 function TodoCard() {
   const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch("http://localhost:3000/todos/", {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/todos/get-todos", {
           method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage?.getItem("token"),
+          },
         });
         const data = await response.json();
-        console.log("Data", data);
+        if (!response.ok) {
+          setLoading(false);
+          setError(data.message || "An error occurred");
+          return;
+        }
+
         setTodos(data);
+        setLoading(false);
       } catch (error) {
-        console.log("Error", error);
+        setError(error.message);
+        setLoading(false);
+        console.log("Error:", error);
       }
     };
     fetchTodos();
@@ -46,11 +60,15 @@ function TodoCard() {
       <h1 className="appTitle">To-Do List App</h1>
       <TodoForm addTodo={addTodo} />
       <TodoFilter setFilter={setFilter} filterName={filter} />
-      <TodoList
-        setTodos={setTodos}
-        todos={filteredTodos}
-        toggleTodoCompletion={toggleTodoCompletion}
-      />
+      {loading && <p>Fetching Todos...</p>}
+      {error && <p className="error">{error}</p>}
+      {!loading && !error && (
+        <TodoList
+          setTodos={setTodos}
+          todos={filteredTodos}
+          toggleTodoCompletion={toggleTodoCompletion}
+        />
+      )}
     </div>
   );
 }
