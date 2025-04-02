@@ -6,33 +6,38 @@ import TodoCard from "./screens/TodoCard";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(true);
-  const [showTodoCard, setShowTodoCard] = useState(false);
   const [token, setToken] = useState("");
 
   useEffect(() => {
     const token = localStorage?.getItem("token");
-    if (!token) {
-      return;
+    if (token) {
+      setToken(token);
     }
-    setToken(localStorage);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken("");
+  };
 
   return (
     <div className="app-container">
-      {!showTodoCard ||
-        (!token && (
-          <div className="form-container">
-            {showLogin ? (
-              <Login
-                toggleForm={() => setShowLogin(false)}
-                setTodo={() => setShowTodoCard(true)}
-              />
-            ) : (
-              <Signup toggleForm={() => setShowLogin(true)} />
-            )}
-          </div>
-        ))}
-      {showTodoCard || (token && <TodoCard />)}
+      {token ? (
+        <>
+          <button onClick={handleLogout} className="btn">
+            Logout
+          </button>
+          <TodoCard />
+        </>
+      ) : (
+        <div className="form-container">
+          {showLogin ? (
+            <Login toggleForm={() => setShowLogin(false)} setToken={setToken} />
+          ) : (
+            <Signup toggleForm={() => setShowLogin(true)} />
+          )}
+        </div>
+      )}
     </div>
   );
 };

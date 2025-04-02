@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Login = ({ toggleForm, setTodo }) => {
+const Login = ({ toggleForm, setToken }) => {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
@@ -52,7 +52,7 @@ const Login = ({ toggleForm, setTodo }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/login", {
+      const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,9 +75,10 @@ const Login = ({ toggleForm, setTodo }) => {
         });
 
         setTimeout(() => {
+          setToken(data.token);
           localStorage.setItem("token", data.token);
           setTodo();
-        }, 1000);
+        }, 500);
       }
     } catch (error) {
       setError({
