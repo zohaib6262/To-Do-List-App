@@ -3,8 +3,7 @@ import TodoItem from "./TodoItem";
 import NoTodos from "./NoTodos";
 
 function TodoList({
-  setTodos,
-  toggleTodoCompletion,
+  fetchTodos,
 
   todos,
 }) {
@@ -14,12 +13,7 @@ function TodoList({
   return (
     <div className="todo-list">
       {todos.map((todo) => (
-        <TodoItem
-          setTodos={setTodos}
-          key={todo.id}
-          todo={todo}
-          toggleTodoCompletion={toggleTodoCompletion}
-        />
+        <TodoItem key={todo.id} fetchTodos={fetchTodos} todo={todo} />
       ))}
     </div>
   );

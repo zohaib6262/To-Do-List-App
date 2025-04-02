@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 
-const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
+const TodoItem = ({ todo, fetchTodos }) => {
   const [update, setUpdate] = useState(false);
   const [newName, setNewName] = useState(todo.name);
-  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const updateHandler = async () => {
-    setLoading(true);
+  const updateHandler = async (todoId, newName, todoCompleted) => {
+    setUpdateLoading(true);
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:3000/todos/update-todo/${todo.id}`,
+        `http://localhost:3000/todos/update-todo/${todoId}`,
         {
           method: "PUT",
-          body: JSON.stringify({ name: newName, completed: todo.completed }),
+          body: JSON.stringify({ name: newName, completed: todoCompleted }),
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + localStorage?.getItem("token"),
@@ -23,11 +24,7 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
       );
       const data = await response.json();
       if (response.ok) {
-        setTodos((prevTodos) =>
-          prevTodos.map((item) =>
-            item.id === todo.id ? { ...item, name: newName } : item
-          )
-        );
+        await fetchTodos();
         setUpdate(false);
       } else {
         setError(data.message || "Error updating todo.");
@@ -36,12 +33,12 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
       setError("An error occurred while updating the todo.");
       console.log("Error", error);
     } finally {
-      setLoading(false);
+      setUpdateLoading(false);
     }
   };
 
   const deleteHandler = async (todo) => {
-    setLoading(true);
+    setDeleteLoading(true);
     setError(null);
     try {
       const response = await fetch(
@@ -56,9 +53,7 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
       );
       const data = await response.json();
       if (response.ok) {
-        setTodos((prevTodos) =>
-          prevTodos.filter((item) => item.id !== todo.id)
-        );
+        await fetchTodos();
       } else {
         setError(data.message || "Error deleting todo.");
       }
@@ -66,8 +61,13 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
       setError("An error occurred while deleting the todo.");
       console.log("Error", error);
     } finally {
-      setLoading(false);
+      setDeleteLoading(false);
     }
+  };
+
+  const toggleCompletionHandler = async () => {
+    const updatedCompleted = !todo.completed;
+    await updateHandler(todo.id, todo.name, updatedCompleted);
   };
 
   return (
@@ -75,13 +75,13 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => toggleTodoCompletion(todo.id)}
+        onChange={toggleCompletionHandler}
       />
       <span className={`${todo.completed && "todo-completed"}`}>
         {update ? (
           <input
             type="text"
-            className=" update-input"
+            className="update-input"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Update Todo"
@@ -94,26 +94,26 @@ const TodoItem = ({ todo, toggleTodoCompletion, setTodos }) => {
         <button
           onClick={() => {
             if (update) {
-              updateHandler();
+              updateHandler(todo.id, newName, todo.completed);
             } else {
               setUpdate(true);
             }
           }}
           className="btn-update"
-          disabled={todo.completed || loading}
+          disabled={todo.completed || updateLoading}
         >
-          {loading ? "Saving..." : update ? "Save" : "Update"}
+          {updateLoading ? "Saving..." : update ? "Save" : "Update"}
         </button>
 
         <button
           onClick={() => deleteHandler(todo)}
           className="btn-delete"
-          disabled={loading}
+          disabled={deleteLoading}
         >
-          {loading ? "Deleting..." : "Delete"}
+          {deleteLoading ? "Deleting..." : "Delete"}
         </button>
       </div>
-      {error && <div className="error-message">{error}</div>}{" "}
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };
