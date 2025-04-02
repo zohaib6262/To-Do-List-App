@@ -77,7 +77,6 @@ const Login = ({ toggleForm, setToken }) => {
         setTimeout(() => {
           setToken(data.token);
           localStorage.setItem("token", data.token);
-          setTodo();
         }, 500);
       }
     } catch (error) {
