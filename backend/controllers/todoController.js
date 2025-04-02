@@ -42,4 +42,38 @@ const getTodos = async (req, res) => {
   }
 };
 
-module.exports = { createTodo, getTodos };
+const updateTodo = async (req, res) => {
+  const userId = req.user.id;
+  const { name, completed } = req.body;
+  const { id } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User is not authenticated" });
+  }
+
+  try {
+    const todo = await Todo.findOne({ where: { id, userId } });
+
+    if (!todo) {
+      return res
+        .status(404)
+        .json({ message: "Todo not found or not owned by user" });
+    }
+
+    const todoUpdate = await Todo.update(
+      { name, completed },
+      { where: { id, userId } }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Todo updated successfully", todoUpdate });
+  } catch (err) {
+    console.error("Error updating Todo:", err);
+    return res.status(500).json({
+      message: err.message || "An error occurred while updating the Todo",
+    });
+  }
+};
+
+module.exports = { createTodo, getTodos, updateTodo };

@@ -5,5 +5,5 @@ const TodoController = require("../controllers/todoController");
 
 router.post("/create-todo", authenticate, TodoController.createTodo);
 router.get("/get-todos", authenticate, TodoController.getTodos);
-
+router.put("/update-todo/:id", authenticate, TodoController.updateTodo);
 module.exports = { todorouter: router };
