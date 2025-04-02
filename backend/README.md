@@ -130,4 +130,8 @@ npx sequelize-cli migration:generate --name add-userId-to-todo
 npx sequelize-cli db:migrate
 ```
 
-### Create an endpoint for getAllTodos from the frontend.
+### Create an endpoint for `getAllTodos` from the frontend with authentication of the request.
+
+### Create an endpoint for `updateTodo` from the frontend with authentication of request.
+
+### Create an endpoint for `deleteTodo` from the frontend with authentication of request.
