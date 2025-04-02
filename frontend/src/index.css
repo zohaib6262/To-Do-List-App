@@ -160,7 +160,17 @@ h2 {
   border-radius: 7px;
   color: white;
 }
+.btn-update:hover {
+  background-color: #458dda;
 
+  background-image: none;
+  transform: translateY(-2px);
+}
+.btn-delete:hover {
+  background-color: rgb(204, 59, 59);
+  background-image: none;
+  transform: translateY(-2px);
+}
 .btn-update {
   background-color: #508ccd;
 }
@@ -204,4 +214,12 @@ h2 {
   text-align: center;
   font-size: 24px;
   margin-bottom: 20px;
+}
+.update-input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
