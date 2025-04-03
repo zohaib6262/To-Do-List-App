@@ -13,6 +13,7 @@ const Signup = ({ toggleForm }) => {
     confirmPassword: "",
   });
   const [backendError, setBackendError] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -23,7 +24,27 @@ const Signup = ({ toggleForm }) => {
       [key]: value,
     });
   };
+  const googleLoginHandler = async () => {
+    setGoogleLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/auth", {
+        method: "POST",
+      });
+      const data = await response.json();
+      console.log("Data received from backend:", data);
 
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("OAuth URL not found in response", data);
+      }
+    } catch (error) {
+      console.error("Error fetching data from backend:", error);
+      setBackendError("Something went wrong. Please try again later.");
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
   const submitHandle = async (e) => {
     e.preventDefault();
 
@@ -60,7 +81,7 @@ const Signup = ({ toggleForm }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch("http://localhost:3000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +159,13 @@ const Signup = ({ toggleForm }) => {
       <button className="btn" type="submit" disabled={isLoading}>
         {isLoading ? "Signing Up..." : "Sign Up"}
       </button>
-
+      <button
+        className="btn google-btn"
+        onClick={googleLoginHandler}
+        disabled={googleLoading}
+      >
+        {googleLoading ? "Redirecting..." : "Continue with Google"}
+      </button>
       <p>
         Already have an account?
         <span className="toggle-form" onClick={toggleForm}>
