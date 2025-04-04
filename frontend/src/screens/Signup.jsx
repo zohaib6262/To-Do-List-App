@@ -27,7 +27,7 @@ const Signup = ({ toggleForm }) => {
   const googleLoginHandler = async () => {
     setGoogleLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/auth", {
+      const response = await fetch("http://localhost:3000/auth/signup", {
         method: "POST",
       });
       const data = await response.json();
