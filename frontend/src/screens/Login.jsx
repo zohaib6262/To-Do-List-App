@@ -1,76 +1,41 @@
 import React, { useState } from "react";
-import GoogleLoginButton from "../components/GoogleLoginButton";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-const Login = ({ toggleForm, setToken }) => {
+const Login = () => {
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   });
-
   const [error, setError] = useState({
     email: "",
     password: "",
   });
-
   const [backendError, setBackendError] = useState("");
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const loginFormHandleChange = (key, value) => {
-    setLoginForm({
-      ...loginForm,
+  const handleChange = (key, value) => {
+    setLoginForm((prev) => ({
+      ...prev,
       [key]: value,
-    });
-  };
-  const googleLoginHandler = async () => {
-    setGoogleLoading(true);
-    try {
-      const response = await fetch("http://localhost:3000/auth", {
-        method: "POST",
-      });
-      const data = await response.json();
-      console.log("Data received from backend:", data);
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("OAuth URL not found in response", data);
-      }
-    } catch (error) {
-      console.error("Error fetching data from backend:", error);
-      setBackendError("Something went wrong. Please try again later.");
-    } finally {
-      setGoogleLoading(false);
-    }
+    }));
   };
 
-  const submitHandle = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError({ email: "", password: "" });
+    setBackendError("");
 
-    let newError = {
-      email: "",
-      password: "",
-    };
-
-    if (!loginForm.email.trim()) {
-      newError.email = "Email is required";
-    }
-
-    if (!loginForm.password.trim()) {
-      newError.password = "Password is required";
-    }
-
-    if (newError.email || newError.password) {
-      setError(newError);
+    if (!loginForm.email || !loginForm.password) {
+      setError({
+        email: !loginForm.email ? "Email is required" : "",
+        password: !loginForm.password ? "Password is required" : "",
+      });
       return;
     }
-
-    setSuccessMessage("");
-    setError({
-      email: "",
-      password: "",
-    });
 
     setIsLoading(true);
 
@@ -82,78 +47,112 @@ const Login = ({ toggleForm, setToken }) => {
         },
         body: JSON.stringify(loginForm),
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        if (data.message) {
-          setBackendError(data.message);
-        }
+        setBackendError(data.message || "Login failed");
         return;
       }
-      if (response.ok) {
-        setSuccessMessage("Login successful! Redirecting...");
-        setLoginForm({
-          email: "",
-          password: "",
-        });
 
-        setTimeout(() => {
-          setToken(data.token);
-          localStorage.setItem("token", data.token);
-        }, 500);
-      }
+      setSuccessMessage("Login successful!");
+      setToken(data.token);
+      navigate("/");
     } catch (error) {
-      setError({
-        email: "Something went wrong. Please try again later.",
-        password: "",
-      });
+      setBackendError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form className="form" onSubmit={submitHandle}>
-      <h2>Login</h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
 
-      {successMessage && <p className="success">{successMessage}</p>}
-      {backendError && <p className="error">{backendError}</p>}
+        {successMessage && (
+          <div className="mb-4 text-green-600 text-center">
+            {successMessage}
+          </div>
+        )}
+        {backendError && (
+          <div className="mb-4 text-red-600 text-center">{backendError}</div>
+        )}
 
-      <input
-        type="email"
-        className="input"
-        placeholder="Email"
-        value={loginForm.email}
-        onChange={(e) => loginFormHandleChange("email", e.target.value)}
-      />
-      {error.email && <p className="error">*{error.email}</p>}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={loginForm.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              className={`mt-2 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                error.email ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {error.email && (
+              <p className="mt-1 text-sm text-red-600">{error.email}</p>
+            )}
+          </div>
 
-      <input
-        type="password"
-        className="input"
-        placeholder="Password"
-        value={loginForm.password}
-        onChange={(e) => loginFormHandleChange("password", e.target.value)}
-      />
-      {error.password && <p className="error">*{error.password}</p>}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={loginForm.password}
+              onChange={(e) => handleChange("password", e.target.value)}
+              className={`mt-2 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                error.password ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {error.password && (
+              <p className="mt-1 text-sm text-red-600">{error.password}</p>
+            )}
+          </div>
 
-      <button className="btn" type="submit" disabled={isLoading}>
-        {isLoading ? "Logging In..." : "Log In"}
-      </button>
-      <button
-        className="btn google-btn"
-        onClick={googleLoginHandler}
-        disabled={googleLoading}
-      >
-        {googleLoading ? "Redirecting..." : "Continue with Google"}
-      </button>
-      <p>
-        Don't have an account?
-        <span className="toggle-form" onClick={toggleForm}>
-          Sign Up
-        </span>
-      </p>
-    </form>
+          <div className="flex items-center justify-between">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-indigo-600 hover:text-indigo-500"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-indigo-600 hover:text-indigo-500"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 

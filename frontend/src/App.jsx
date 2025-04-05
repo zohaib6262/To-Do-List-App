@@ -1,92 +1,48 @@
-import React, { useEffect, useState, useRef } from "react";
-import "./App.css";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
+import Layout from "./components/Layout";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
-import TodoCard from "./screens/TodoCard";
+import TodoDashboard from "./screens/TodoDashboard";
 import Settings from "./screens/Settings";
 import Notifications from "./screens/Notifications";
-import ProfileCard from "./components/ProfileCard"; // Import ProfileCard component
-import Navbar from "./components/Navbar";
+import ForgotPassword from "./screens/ForgotPassword";
+import ResetPassword from "./screens/ResetPassword";
+import AccountSettings from "./screens/AccountSettings";
+import PasswordSettings from "./screens/PasswordSettings";
 
 const App = () => {
-  const [showLogin, setShowLogin] = useState(true);
-  const [token, setToken] = useState("");
-  const [activeSection, setActiveSection] = useState("todoDashboard");
-  const [isProfileCardOpen, setIsProfileCardOpen] = useState(false);
-  const profileCardRef = useRef(null);
-
-  useEffect(() => {
-    const token = localStorage?.getItem("token");
-    if (token) {
-      setToken(token);
-    }
-  }, []);
-
-  const toggleProfileCard = () => {
-    setIsProfileCardOpen(!isProfileCardOpen);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        profileCardRef.current &&
-        !profileCardRef.current.contains(event.target)
-      ) {
-        setIsProfileCardOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    setIsProfileCardOpen(isProfileCardOpen);
-  }, [activeSection]);
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case "todoDashboard":
-        return <TodoCard />;
-      case "settings":
-        return <Settings />;
-      case "notifications":
-        return <Notifications />;
-      default:
-        return <TodoCard />;
-    }
-  };
+  const { token } = useAuth();
 
   return (
-    <div className="app-container">
-      {token ? (
-        <>
-          <Navbar
-            setActiveSection={setActiveSection}
-            activeSection={activeSection}
-            toggleProfileCard={toggleProfileCard}
-          />
-          <div className="content">{renderContent()}</div>
+    <Router>
+      <Routes>
+        <Route
+          path="/login"
+          element={!token ? <Login /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/signup"
+          element={!token ? <Signup /> : <Navigate to="/" />}
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-          {isProfileCardOpen && (
-            <div className="profile-card-container" ref={profileCardRef}>
-              <ProfileCard setActiveSection={setActiveSection} />
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="form-container">
-          {showLogin ? (
-            <Login toggleForm={() => setShowLogin(false)} setToken={setToken} />
-          ) : (
-            <Signup toggleForm={() => setShowLogin(true)} />
-          )}
-        </div>
-      )}
-    </div>
+        <Route path="/" element={token ? <Layout /> : <Navigate to="/login" />}>
+          <Route index element={<TodoDashboard />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="settings/account" element={<AccountSettings />} />
+          <Route path="settings/password" element={<PasswordSettings />} />
+          <Route path="notifications" element={<Notifications />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 };
 

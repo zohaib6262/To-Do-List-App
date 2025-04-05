@@ -31,7 +31,6 @@ const sendWelcomeEmail = async (email, todo) => {
 async function checkOverdueTodos() {
   try {
     const currentTime = new Date();
-
     const overdueTodos = await Todo.findAll({
       where: {
         dueDate: { [Sequelize.Op.lt]: currentTime },
@@ -41,7 +40,6 @@ async function checkOverdueTodos() {
 
     if (overdueTodos.length) {
       console.log(`Found ${overdueTodos.length} overdue tasks`);
-
       for (const todo of overdueTodos) {
         await sendWelcomeEmail("zohaibbinashraaf@gmail.com", todo);
         console.log(`Sent email for overdue todo: "${todo.name}"`);

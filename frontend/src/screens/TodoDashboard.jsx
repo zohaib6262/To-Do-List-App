@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import TodoForm from "../components/TodoForm";
 import TodoFilter from "../components/TodoFilter";
 import TodoList from "../components/TodoList";
 
-function TodoCard() {
+const TodoDashboard = () => {
   const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("all");
   const [error, setError] = useState("");
@@ -15,10 +15,11 @@ function TodoCard() {
       const response = await fetch("http://localhost:3000/todos/get-todos", {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + localStorage?.getItem("token"),
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       const data = await response.json();
+
       if (!response.ok) {
         setError(data.message || "An error occurred");
         return;
@@ -26,7 +27,7 @@ function TodoCard() {
 
       setTodos(data);
     } catch (error) {
-      setError(error.message || "An error occurred while fetching todos.");
+      setError("An error occurred while fetching todos.");
     } finally {
       setLoading(false);
     }
@@ -43,17 +44,30 @@ function TodoCard() {
   });
 
   return (
-    <div className="form-container">
-      <h1 className="appTitle">To-Do List App</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+        Todo Dashboard
+      </h1>
       <TodoForm fetchTodos={fetchTodos} />
       <TodoFilter setFilter={setFilter} filterName={filter} />
-      {loading && <p>Fetching Todos...</p>}
-      {error && <p className="error">{error}</p>}
+
+      {loading && (
+        <div className="text-center py-4">
+          <p className="text-gray-600">Loading todos...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mb-4">
+          {error}
+        </div>
+      )}
+
       {!loading && !error && (
         <TodoList fetchTodos={fetchTodos} todos={filteredTodos} />
       )}
     </div>
   );
-}
+};
 
-export default TodoCard;
+export default TodoDashboard;

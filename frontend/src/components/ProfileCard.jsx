@@ -1,60 +1,36 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import profileImage from "../assets/allTodos.png";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import profileImage from "../assets/allTodos.png"; // Placeholder image
+import AuthContext from "../contexts/AuthContext";
 
-const ProfileCard = ({ setActiveSection }) => {
+const ProfileCard = () => {
+  const navigate = useNavigate();
+  const { setToken } = useContext(AuthContext);
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setToken(""); // Reset the token state
+    setToken("");
+    navigate("/login");
   };
+
   return (
-    <div className="profile-card">
-      <div style={{ position: "relative" }}>
-        <img
-          src={profileImage}
-          alt="Profile"
-          className="profile-img"
-          style={{
-            borderRadius: "50%",
-            border: "2px solid pink",
-            width: "80px",
-            height: "80px",
-          }}
-        />
+    <div className="flex flex-col items-center ">
+      <img
+        src={profileImage}
+        alt="Profile"
+        className="w-20 h-20 rounded-full border-2 border-pink-500 mb-4"
+      />
+      <h3 className="text-lg font-semibold mb-4">John Doe</h3>
+      <div className="space-x-4">
         <button
-          className="edit-profile-btn"
-          onClick={() => alert("Edit Profile Clicked")}
-          style={{
-            position: "absolute",
-            top: "49px",
-            fontSize: "15px",
-            right: "-5px",
-            borderRadius: "50%",
-            border: "none",
-            padding: "10px",
-            cursor: "pointer",
-          }}
-        >
-          <FontAwesomeIcon icon={faEdit} style={{ color: "black" }} />{" "}
-          {/* Set icon color to black */}
-        </button>
-      </div>
-      <h3 className="username">John Doe</h3>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "30px",
-        }}
-      >
-        <button
-          className="btn-settings"
-          onClick={() => setActiveSection("settings")}
+          onClick={() => navigate("/settings")}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
         >
           Settings
         </button>
-        <button onClick={handleLogout} className="btn-logout">
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg"
+        >
           Logout
         </button>
       </div>

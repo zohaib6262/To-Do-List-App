@@ -5,16 +5,17 @@ const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
 const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
-
+  const { fullName, email, password } = req.body;
+  const username = fullName.toLowerCase();
   try {
     const userExists = await User.findOne({ where: { email } });
+    console.log("User Exits", fullName, email, password, username);
 
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = await User.create({ username, email, password });
+    const newUser = await User.create({ username, email, password, fullName });
     res
       .status(201)
       .json({ message: "User registered successfully", user: newUser });
