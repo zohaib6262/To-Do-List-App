@@ -1,0 +1,240 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: radial-gradient(
+    circle,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  background-color: #fff;
+  margin-top: 1rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-container:hover {
+  transform: translateY(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(
+    circle,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+}
+
+p {
+  text-align: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #00aaff;
+  box-shadow: 0 0 8px rgba(0, 170, 255, 0.4);
+}
+
+.btn {
+  padding: 14px;
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  background-image: none;
+}
+
+.toggle-form {
+  margin-left: 0.2rem;
+  color: #699ed7;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.toggle-form:hover {
+  color: #0056b3;
+}
+
+/* Error and Success Styling */
+.error {
+  color: rgb(216, 54, 54);
+  margin-top: -0.8rem;
+}
+
+.success {
+  color: rgb(61, 147, 61);
+}
+
+/* TodoCard Styles */
+.todo-form {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+.todo-form button {
+  padding: 10px 15px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.todo-form button:hover {
+  background-color: #0056b3;
+}
+
+.todo-list {
+  margin-top: 20px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.todo-item .completed {
+  text-decoration: line-through;
+  color: #bbb;
+}
+
+.todo-completed {
+  text-decoration: line-through;
+  color: #bbb;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-update,
+.btn-delete {
+  padding: 9px;
+  border: none;
+  border-radius: 7px;
+  color: white;
+}
+.btn-update:hover {
+  background-color: #458dda;
+
+  background-image: none;
+  transform: translateY(-2px);
+}
+.btn-delete:hover {
+  background-color: rgb(204, 59, 59);
+  background-image: none;
+  transform: translateY(-2px);
+}
+.btn-update {
+  background-color: #508ccd;
+}
+
+.btn-delete {
+  background-color: rgb(199, 86, 86);
+}
+
+.btn:hover {
+  padding: 10px;
+}
+
+.no-todos {
+  text-align: center;
+}
+
+.todo-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.todo-filter .button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+}
+
+.todo-filter .all,
+.todo-filter .completed,
+.todo-filter .pending {
+  background-color: #508ccd;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+
+/* Title for TodoCard */
+.appTitle {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.update-input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
