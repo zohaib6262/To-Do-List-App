@@ -51,6 +51,83 @@ const loginUser = async (req, res) => {
   }
 };
 
+const getUserAccount = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({
+      where: { id: decoded.id },
+      attributes: ["id", "fullName", "email", "username"],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("Usersadfdasf", user);
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
+
+const updateUserAccount = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1]; // Extract "Bearer <token>"
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const { fullName, email, username } = req.body;
+
+    const existingUserWithEmail = await User.findOne({ where: { email } });
+
+    if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
+      return res.status(400).json({ message: "Email is already in use" });
+    }
+
+    const existingUserWithUsername = await User.findOne({
+      where: { username },
+    });
+
+    if (existingUserWithUsername && existingUserWithUsername.id !== userId) {
+      return res.status(400).json({ message: "Username is already in use" });
+    }
+
+    const updatedUser = await User.update(
+      {
+        fullName,
+        email,
+        username,
+      },
+      {
+        where: { id: userId },
+      }
+    );
+
+    if (updatedUser[0] === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return a success response
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating user account", error });
+  }
+};
+
 const googleLogin = async (req, res) => {
   if (req.method === "POST") {
     return res.json({ url: req.url });
@@ -99,4 +176,10 @@ const fetchUserData = async (access_token) => {
   return userData;
 };
 
-module.exports = { registerUser, loginUser, googleLogin };
+module.exports = {
+  registerUser,
+  loginUser,
+  googleLogin,
+  getUserAccount,
+  updateUserAccount,
+};

@@ -1,26 +1,124 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User, Mail, AtSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const AccountSettings = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    username: "johndoe",
+    name: "",
+    email: "",
+    username: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          "http://localhost:3000/auth/settings/account",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setFormData({
+            name: data.user.fullName,
+            email: data.user.email,
+            username: data.user.username,
+          });
+        } else {
+          setError("Failed to fetch user data");
+        }
+      } catch (error) {
+        setError("Error fetching user data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Formik validation schema
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Full name is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+        "Email must be a Gmail address"
+      )
+      .required("Email is required"),
+    username: Yup.string()
+      .matches(/^\S*$/, "No spaces are allowed in username")
+      .required("Username is required"),
+  });
+
+  // Formik hook
+  const formik = useFormik({
+    initialValues: formData,
+    validationSchema: validationSchema,
+    enableReinitialize: true, // This will allow Formik to reinitialize when `formData` changes
+    onSubmit: async (values) => {
+      setLoading(true);
+      setError(null);
+      setSuccessMessage("");
+      try {
+        const response = await fetch(
+          "http://localhost:3000/auth/settings/account",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              fullName: values.name,
+              email: values.email,
+              username: values.username,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+          setSuccessMessage("User updated successfully!");
+          navigate("../");
+        } else {
+          const errorData = await response.json();
+          setError(errorData.message || "Failed to update user");
+        }
+      } catch (error) {
+        setError("Error submitting form");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Account Settings
       </h2>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {loading && <div className="text-center text-indigo-600">Loading...</div>}
+      {error && <div className="text-center text-red-600">{error}</div>}
+      {successMessage && (
+        <div className="text-center text-green-600">{successMessage}</div>
+      )}
+      <form onSubmit={formik.handleSubmit} className="space-y-6">
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <div className="space-y-4">
             <div>
@@ -30,12 +128,16 @@ const AccountSettings = () => {
               </label>
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                name="name"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={loading} // Disable input during loading
               />
+              {formik.touched.name && formik.errors.name && (
+                <div className="text-red-600 text-sm">{formik.errors.name}</div>
+              )}
             </div>
 
             <div>
@@ -45,12 +147,18 @@ const AccountSettings = () => {
               </label>
               <input
                 type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={loading} // Disable input during loading
               />
+              {formik.touched.email && formik.errors.email && (
+                <div className="text-red-600 text-sm">
+                  {formik.errors.email}
+                </div>
+              )}
             </div>
 
             <div>
@@ -60,12 +168,18 @@ const AccountSettings = () => {
               </label>
               <input
                 type="text"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
+                name="username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={loading}
               />
+              {formik.touched.username && formik.errors.username && (
+                <div className="text-red-600 text-sm">
+                  {formik.errors.username}
+                </div>
+              )}
             </div>
           </div>
 
@@ -73,8 +187,9 @@ const AccountSettings = () => {
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              disabled={loading}
             >
-              Save Changes
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </div>
