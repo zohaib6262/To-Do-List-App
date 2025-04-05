@@ -1,5 +1,4 @@
-/* General Styles */
-* {
+General Styles * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -25,7 +24,7 @@ body {
 
 .form-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   background-color: #fff;
   margin-top: 1rem;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -49,6 +48,128 @@ body {
     rgba(242, 140, 242, 0.8),
     rgba(255, 123, 195, 0.8)
   );
+}
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(135deg, #ff7bc5, #fb68d5);
+  padding: 15px 25px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side (Todo Dashboard) */
+.navbar .left-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar .left-nav li {
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Right side (Settings, Profile) */
+.navbar .right-nav {
+  display: flex;
+  gap: 20px;
+}
+/* Profile Card Styles */
+.profile-card {
+  position: absolute;
+  top: 50px; /* Adjust this to position it properly relative to the button */
+  right: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.username {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.btn-settings {
+  padding: 8px 12px;
+  background-color: #508ccd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-logout {
+  padding: 8px 12px;
+  background-color: #d45e5e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-logout:hover {
+  background-color: #e31e1e;
+}
+
+.btn-settings:hover {
+  background-color: #3e7bbf;
+}
+
+/* Style for the Edit Profile button */
+.edit-profile-btn {
+  background: transparent;
+  border: none;
+  color: #4caf50;
+  cursor: pointer;
+  font-size: 5rem;
+}
+
+.edit-profile-btn:hover {
+  color: #1316b1;
+}
+
+.navbar li:hover {
+  color: #ff3e9e;
+  transform: scale(1.1);
+}
+
+.navbar li.active {
+  border-bottom: 2px solid #ff3e9e;
+  font-weight: bolder;
+}
+
+/* Content Section */
+.content {
+  margin-top: 80px; /* Adjust to avoid overlap with the navbar */
+  text-align: center;
+}
+
+.content {
+  margin-top: 20px;
 }
 
 p {
@@ -191,6 +312,244 @@ h2 {
   background-image: none;
   transform: translateY(-2px);
 }
+.btn-update {
+  background-color: #508ccd;
+}
+
+.btn-delete {
+  background-color: rgb(199, 86, 86);
+}
+
+.btn:hover {
+  padding: 10px;
+}
+
+.no-todos {
+  text-align: center;
+}
+
+.todo-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.todo-filter .button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+}
+
+.todo-filter .all,
+.todo-filter .completed,
+.todo-filter .pending {
+  background-color: #508ccd;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+
+/* Title for TodoCard */
+.appTitle {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.update-input {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: radial-gradient(
+    circle,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(
+    circle,
+    rgba(242, 140, 242, 0.8),
+    rgba(255, 123, 195, 0.8)
+  );
+}
+
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(135deg, #ff7bc5, #fb68d5);
+  padding: 15px 25px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.navbar ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navbar li:hover {
+  color: #ff3e9e;
+  transform: scale(1.1);
+}
+
+.navbar li.active {
+  border-bottom: 2px solid #ff3e9e;
+}
+
+/* Content Section */
+.content {
+  margin-top: 80px; /* Adjust to avoid overlap with the navbar */
+  text-align: center;
+}
+
+.appTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Button Styles */
+.btn {
+  padding: 14px;
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  background-image: none;
+}
+
+.toggle-form {
+  margin-left: 0.2rem;
+  color: #699ed7;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.toggle-form:hover {
+  color: #0056b3;
+}
+
+/* TodoCard Styles */
+.todo-form {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.todo-form button {
+  padding: 10px 15px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.todo-form button:hover {
+  background-color: #0056b3;
+}
+.input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.todo-list {
+  margin-top: 20px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.todo-item .completed {
+  text-decoration: line-through;
+  color: #bbb;
+}
+
+.todo-completed {
+  text-decoration: line-through;
+  color: #bbb;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-update,
+.btn-delete {
+  padding: 9px;
+  border: none;
+  border-radius: 7px;
+  color: white;
+}
+
+.btn-update:hover {
+  background-color: #458dda;
+  background-image: none;
+  transform: translateY(-2px);
+}
+
+.btn-delete:hover {
+  background-color: rgb(204, 59, 59);
+  background-image: none;
+  transform: translateY(-2px);
+}
+
 .btn-update {
   background-color: #508ccd;
 }
