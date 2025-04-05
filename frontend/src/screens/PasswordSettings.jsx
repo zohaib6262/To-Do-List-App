@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const PasswordSettings = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -14,10 +15,50 @@ const PasswordSettings = () => {
     confirm: false,
   });
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle password update
-    console.log("Password update:", formData);
+    setLoading(true);
+    setError(null);
+    setSuccessMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/auth/settings/password",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            currentPassword: formData.currentPassword,
+            newPassword: formData.newPassword,
+            confirmPassword: formData.confirmPassword,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setSuccessMessage("Password updated successfully!");
+        setFormData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        navigate("../");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Failed to update password");
+      }
+    } catch (error) {
+      setError("Error updating password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const togglePasswordVisibility = (field) => {
@@ -32,6 +73,12 @@ const PasswordSettings = () => {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         Password Settings
       </h2>
+
+      {loading && <div className="text-center text-indigo-600">Saving...</div>}
+      {error && <div className="text-center text-red-600">{error}</div>}
+      {successMessage && (
+        <div className="text-center text-green-600">{successMessage}</div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white p-6 rounded-lg shadow-sm">

@@ -70,7 +70,7 @@ const AccountSettings = () => {
   const formik = useFormik({
     initialValues: formData,
     validationSchema: validationSchema,
-    enableReinitialize: true, // This will allow Formik to reinitialize when `formData` changes
+    enableReinitialize: true,
     onSubmit: async (values) => {
       setLoading(true);
       setError(null);

@@ -127,6 +127,56 @@ const updateUserAccount = async (req, res) => {
     res.status(500).json({ message: "Error updating user account", error });
   }
 };
+const updatePassword = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!newPassword || !confirmPassword || !currentPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "New passwords do not match" });
+    }
+
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Validate the current password
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.dataValues.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    // Hash the new password before saving
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.update(
+      { password: hashedNewPassword },
+      { where: { id: userId } }
+    );
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating password", error });
+  }
+};
 
 const googleLogin = async (req, res) => {
   if (req.method === "POST") {
@@ -182,4 +232,5 @@ module.exports = {
   googleLogin,
   getUserAccount,
   updateUserAccount,
+  updatePassword,
 };

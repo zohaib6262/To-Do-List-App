@@ -6,5 +6,5 @@ router.post("/signup", AuthController.registerUser);
 router.post("/login", AuthController.loginUser);
 router.get("/settings/account", AuthController.getUserAccount);
 router.put("/settings/account", AuthController.updateUserAccount);
-
+router.put("/settings/password", AuthController.updatePassword);
 module.exports = { authrouter: router };
