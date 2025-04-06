@@ -49,12 +49,15 @@ const Login = () => {
       );
 
       const data = await response.json();
-
+      console.log("Data////////.....", data);
       if (!response.ok) {
         throw new Error(data.message || "Google Signin failed");
       }
 
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.username);
+      localStorage.setItem("userProfile", data.userProfile);
+      localStorage.setItem("fullName", data.fullName);
       setToken(data.token);
 
       navigate("/");

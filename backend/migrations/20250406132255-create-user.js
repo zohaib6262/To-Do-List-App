@@ -12,13 +12,16 @@ module.exports = {
       username: {
         type: Sequelize.STRING
       },
-      fullName: {
-        type: Sequelize.STRING
-      },
       email: {
         type: Sequelize.STRING
       },
       password: {
+        type: Sequelize.STRING
+      },
+      fullName: {
+        type: Sequelize.STRING
+      },
+      userProfile: {
         type: Sequelize.STRING
       },
       resetToken: {
@@ -26,6 +29,9 @@ module.exports = {
       },
       resetTokenExpiry: {
         type: Sequelize.DATE
+      },
+      userType: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

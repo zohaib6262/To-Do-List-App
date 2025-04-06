@@ -2,21 +2,36 @@ const { User } = require("../models");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { OAuth2Client } = require("google-auth-library");
-const fetch = require("node-fetch");
 const nodemailer = require("nodemailer");
+const { oauth2Client } = require("../utils/googleConfig");
+const axios = require("axios");
 const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
+  const emailLower = email.toLowerCase();
   const username = fullName.toLowerCase();
+
   try {
-    const userExists = await User.findOne({ where: { email } });
-    console.log("User Exits", fullName, email, password, username);
+    const userExists = await User.findOne({ where: { email: emailLower } });
 
     if (userExists) {
+      if (userExists.type === "google") {
+        res.status(400).json({
+          message:
+            "This email is already registered via Google. Please login using Google or reset your password.",
+        });
+        return;
+      }
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = await User.create({ username, email, password, fullName });
+    const newUser = await User.create({
+      fullName,
+      username,
+      email: emailLower,
+      password,
+      type: "local",
+    });
+
     res
       .status(201)
       .json({ message: "User registered successfully", user: newUser });
@@ -24,21 +39,35 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: "Error registering user", error });
   }
 };
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  const emailLower = email.toLowerCase();
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email: emailLower } });
+
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-
+    console.log("User lsadkf;9ozsdjklxc", user);
     const isPasswordValid = await bcrypt.compare(
       password,
       user.dataValues.password
     );
-
-    console.log("ISPASSWORD", isPasswordValid);
+    if (isPasswordValid) {
+      const token = jwt.sign(
+        { id: user.dataValues.id },
+        process.env.JWT_SECRET
+      );
+      return res.status(200).json({ message: "Login successful", token });
+    }
+    if (user.userType === "google" && !isPasswordValid) {
+      return res.status(400).json({
+        message:
+          "This account was created using Google. Please login via 'Continue with Google' or reset your password.",
+      });
+    }
 
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -52,13 +81,11 @@ const loginUser = async (req, res) => {
   }
 };
 
-//For Forgost Password
-// Setup email transporter
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Use your email provider's service
+  service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Replace with your email
-    pass: process.env.EMAIL_PASS, // Replace with your email password or app password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 const forgotPassword = async (req, res) => {
@@ -70,18 +97,15 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate reset token with 1-hour expiration
     const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Save token and expiration time to the database
     await user.update({
       resetToken,
-      resetTokenExpiry: Date.now() + 3600000, // Expiry in 1 hour
+      resetTokenExpiry: Date.now() + 3600000,
     });
 
-    // Send email with reset link
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
     console.log("Reset Url", resetUrl);
     await transporter.sendMail({
@@ -130,13 +154,12 @@ const getUserAccount = async (req, res) => {
 
 const updateUserAccount = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // Extract "Bearer <token>"
+    const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
@@ -171,7 +194,6 @@ const updateUserAccount = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return a success response
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     console.error(error);
@@ -204,7 +226,6 @@ const updatePassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Validate the current password
     const isPasswordValid = await bcrypt.compare(
       currentPassword,
       user.dataValues.password
@@ -214,7 +235,6 @@ const updatePassword = async (req, res) => {
       return res.status(400).json({ message: "Current password is incorrect" });
     }
 
-    // Hash the new password before saving
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     await User.update(
@@ -230,6 +250,7 @@ const updatePassword = async (req, res) => {
 };
 
 // Google Login
+
 const googleLogin = async (req, res) => {
   try {
     const { code } = req.query;
@@ -240,14 +261,21 @@ const googleLogin = async (req, res) => {
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
     );
 
-    const { email, name } = userRes.data;
+    const { email, name, picture } = userRes.data;
+
     let user = await User.findOne({ where: { email } });
 
     if (!user) {
+      const randomPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
       user = await User.create({
         email,
         fullName: name,
         username: name.toLowerCase().replace(/\s+/g, "_"),
+        userType: "google",
+        userProfile: picture,
+        password: hashedPassword,
       });
     }
 
@@ -257,6 +285,7 @@ const googleLogin = async (req, res) => {
       token,
       fullName: user.fullName,
       username: user.username,
+      userProfile: user.userProfile,
     });
   } catch (error) {
     console.error("Google login error:", error);
@@ -265,19 +294,6 @@ const googleLogin = async (req, res) => {
       details: error.message,
     });
   }
-};
-
-const fetchUserData = async (access_token) => {
-  const response = await fetch(
-    `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user data from Google");
-  }
-
-  const userData = await response.json();
-  return userData;
 };
 
 module.exports = {

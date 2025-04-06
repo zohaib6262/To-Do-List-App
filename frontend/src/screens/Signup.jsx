@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+import AuthContext from "../contexts/AuthContext";
 const Signup = () => {
   const navigate = useNavigate();
+  const { setToken } = useContext(AuthContext);
   const [signUpForm, setSignUpForm] = useState({
     fullName: "",
     email: "",
@@ -65,6 +67,7 @@ const Signup = () => {
       if (!response.ok) {
         throw new Error(data.message || "Google Signin failed");
       }
+      console.log("Data..........", data);
 
       localStorage.setItem("token", data.token);
       setToken(data.token);
