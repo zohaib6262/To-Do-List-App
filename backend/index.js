@@ -4,7 +4,7 @@ const cron = require("node-cron");
 const { authrouter } = require("./routes/authrouter");
 const { todorouter } = require("./routes/todorouter");
 require("dotenv").config();
-const { checkOverdueTodos } = require("./lib/mailtrap.js"); // Import the function
+const { checkOverdueTodos } = require("./lib/brevo.js"); // Import the function
 const app = express();
 const port = 3000;
 app.use(express.json());

@@ -19,6 +19,14 @@ const TodoForm = ({ fetchTodos }) => {
       setError("Due date cannot be in the past.");
       return;
     }
+    if (todoName.trim().length === 0 || !todoName) {
+      setError("Please,Enter todo title");
+      return;
+    }
+    if (!dueDate) {
+      setError("Please,Select due date");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -41,6 +49,7 @@ const TodoForm = ({ fetchTodos }) => {
       } else {
         setTodoName("");
         setDueDate("");
+        setError("");
         fetchTodos();
       }
     } catch (error) {
