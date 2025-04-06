@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-
-const Signup = ({ toggleForm }) => {
+import { useGoogleLogin } from "@react-oauth/google";
+const Signup = () => {
   const navigate = useNavigate();
   const [signUpForm, setSignUpForm] = useState({
     fullName: "",
@@ -38,29 +38,53 @@ const Signup = ({ toggleForm }) => {
       email: "",
       password: "",
       confirmPassword: "",
-    }); // Clear errors on input change
+    });
   };
 
-  const googleLoginHandler = async () => {
+  const googleSigninHandler = async (authResult) => {
+    console.log("Auth code", authResult);
+    if (!authResult.code) {
+      setBackendError("No authorization code received from Google.");
+      return;
+    }
+
     setGoogleLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/auth/", {
-        method: "POST",
-      });
+      const response = await fetch(
+        `http://localhost:3000/auth/google?code=${authResult.code}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("OAuth URL not found in response", data);
+
+      if (!response.ok) {
+        throw new Error(data.message || "Google Signin failed");
       }
+
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+
+      navigate("/");
     } catch (error) {
-      console.error("Error fetching data from backend:", error);
-      setBackendError("Something went wrong. Please try again later.");
+      console.log("Google Signin Error:", error);
+      setBackendError(
+        error.message || "Something went wrong with Google Signin."
+      );
     } finally {
       setGoogleLoading(false);
     }
   };
 
+  const googleSignin = useGoogleLogin({
+    onSuccess: googleSigninHandler,
+    onError: googleSigninHandler,
+    flow: "auth-code",
+  });
   const submitHandle = async (e) => {
     e.preventDefault();
 
@@ -305,7 +329,7 @@ const Signup = ({ toggleForm }) => {
           {/* Google Login Button */}
           <button
             type="button"
-            onClick={googleLoginHandler}
+            onClick={googleSignin}
             disabled={googleLoading}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mt-4 disabled:opacity-50"
           >

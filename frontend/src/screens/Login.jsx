@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +17,8 @@ const Login = () => {
   });
   const [backendError, setBackendError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (key, value) => {
@@ -22,7 +26,53 @@ const Login = () => {
       ...prev,
       [key]: value,
     }));
+    setError({ email: "", password: "" });
   };
+
+  const googleSigninHandler = async (authResult) => {
+    console.log("Auth code", authResult);
+    if (!authResult.code) {
+      setBackendError("No authorization code received from Google.");
+      return;
+    }
+
+    setGoogleLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/auth/google?code=${authResult.code}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Google Signin failed");
+      }
+
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+
+      navigate("/");
+    } catch (error) {
+      console.log("Google Signin Error:", error);
+      setBackendError(
+        error.message || "Something went wrong with Google Signin."
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const googleSignin = useGoogleLogin({
+    onSuccess: googleSigninHandler,
+    onError: googleSigninHandler,
+    flow: "auth-code",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,15 +158,28 @@ const Login = () => {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={loginForm.password}
-              onChange={(e) => handleChange("password", e.target.value)}
-              className={`mt-2 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                error.password ? "border-red-500" : "border-gray-300"
-              }`}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={loginForm.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                className={`mt-2 block w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                  error.password ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
             {error.password && (
               <p className="mt-1 text-sm text-red-600">{error.password}</p>
             )}
@@ -137,6 +200,15 @@ const Login = () => {
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
           >
             {isLoading ? "Logging in..." : "Login"}
+          </button>
+
+          <button
+            type="button"
+            onClick={googleSignin}
+            disabled={googleLoading}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+          >
+            {googleLoading ? "Redirecting..." : "Continue with Google"}
           </button>
         </form>
 

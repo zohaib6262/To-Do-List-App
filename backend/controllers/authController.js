@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
+const nodemailer = require("nodemailer");
 const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
   const username = fullName.toLowerCase();
@@ -51,6 +52,57 @@ const loginUser = async (req, res) => {
   }
 };
 
+//For Forgost Password
+// Setup email transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail", // Use your email provider's service
+  auth: {
+    user: process.env.EMAIL_USER, // Replace with your email
+    pass: process.env.EMAIL_PASS, // Replace with your email password or app password
+  },
+});
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate reset token with 1-hour expiration
+    const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // Save token and expiration time to the database
+    await user.update({
+      resetToken,
+      resetTokenExpiry: Date.now() + 3600000, // Expiry in 1 hour
+    });
+
+    // Send email with reset link
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    console.log("Reset Url", resetUrl);
+    await transporter.sendMail({
+      to: email,
+      subject: "Password Reset Request",
+      html: `
+        <p>You requested a password reset.</p>
+        <p>Click this <a href="${resetUrl}">link</a> to reset your password.</p>
+        <p>This link will expire in 1 hour.</p>
+      `,
+    });
+
+    res.json({
+      message:
+        "If your email is registered, you will receive a password reset link shortly.",
+    });
+  } catch (error) {
+    console.error("Password reset error:", error);
+    res.status(500).json({ message: "Error processing request" });
+  }
+};
 const getUserAccount = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -65,7 +117,6 @@ const getUserAccount = async (req, res) => {
       where: { id: decoded.id },
       attributes: ["id", "fullName", "email", "username"],
     });
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -178,38 +229,41 @@ const updatePassword = async (req, res) => {
   }
 };
 
+// Google Login
 const googleLogin = async (req, res) => {
-  if (req.method === "POST") {
-    return res.json({ url: req.url });
-  }
-
-  const code = req.query.code;
-  if (!code) {
-    return res.status(400).json({ error: "Missing authorization code" });
-  }
-  const oAuth2Client = new OAuth2Client(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    "http://127.0.0.1:3000/oauth"
-  );
-
   try {
-    const { tokens } = await oAuth2Client.getToken(code);
-    req.tokens = tokens;
+    const { code } = req.query;
+    const googleRes = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(googleRes.tokens);
 
-    await oAuth2Client.setCredentials(res.tokens);
-    console.log("Tokens acquired");
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
 
-    const user = oAuth2Client.credentials;
-    console.log("Credentials", user);
+    const { email, name } = userRes.data;
+    let user = await User.findOne({ where: { email } });
 
-    const userData = await fetchUserData(tokens.access_token);
+    if (!user) {
+      user = await User.create({
+        email,
+        fullName: name,
+        username: name.toLowerCase().replace(/\s+/g, "_"),
+      });
+    }
 
-    res.json({ user: userData });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+
+    res.status(200).json({
+      token,
+      fullName: user.fullName,
+      username: user.username,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to authenticate with Google", details: error });
+    console.error("Google login error:", error);
+    res.status(500).json({
+      error: "Failed to authenticate with Google",
+      details: error.message,
+    });
   }
 };
 
@@ -233,4 +287,5 @@ module.exports = {
   getUserAccount,
   updateUserAccount,
   updatePassword,
+  forgotPassword,
 };
