@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { User, Mail, AtSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import AuthContext from "../contexts/AuthContext";
 
 const AccountSettings = () => {
   const navigate = useNavigate();

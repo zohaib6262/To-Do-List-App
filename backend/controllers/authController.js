@@ -179,7 +179,7 @@ const getUserAccount = async (req, res) => {
 
     const user = await User.findOne({
       where: { id: decoded.id },
-      attributes: ["id", "fullName", "email", "username"],
+      attributes: ["id", "fullName", "email", "username", "userProfile"],
     });
     if (!user) {
       return res.status(404).json({ message: "User not found" });

@@ -55,9 +55,6 @@ const Login = () => {
       }
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("userName", data.username);
-      localStorage.setItem("userProfile", data.userProfile);
-      localStorage.setItem("fullName", data.fullName);
       setToken(data.token);
 
       navigate("/");
