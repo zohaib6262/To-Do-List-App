@@ -34,7 +34,7 @@ const ResetPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/auth/reset-password",
+        "http://localhost:3000/auth/reset-password",
         {
           method: "POST",
           headers: {
@@ -105,7 +105,7 @@ const ResetPassword = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="p-3 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               placeholder="Enter new password"
             />
           </div>
@@ -122,7 +122,7 @@ const ResetPassword = () => {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="p-3 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               placeholder="Confirm new password"
             />
           </div>

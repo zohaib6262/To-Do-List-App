@@ -21,7 +21,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/auth//forgot-password",
+        "http://localhost:3000/auth/forgot-password",
         {
           method: "POST",
           headers: {
@@ -32,6 +32,7 @@ const ForgotPassword = () => {
       );
 
       const data = await response.json();
+      console.log("Data", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to send reset email");

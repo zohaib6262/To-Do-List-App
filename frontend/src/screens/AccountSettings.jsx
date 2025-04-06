@@ -51,16 +51,8 @@ const AccountSettings = () => {
     fetchUserData();
   }, []);
 
-  // Formik validation schema
   const validationSchema = Yup.object({
     name: Yup.string().required("Full name is required"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-        "Email must be a Gmail address"
-      )
-      .required("Email is required"),
     username: Yup.string()
       .matches(/^\S*$/, "No spaces are allowed in username")
       .required("Username is required"),
@@ -151,14 +143,9 @@ const AccountSettings = () => {
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                disabled={loading} // Disable input during loading
+                className="w-full px-3 py-2 border bg-gray-200 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                disabled={true}
               />
-              {formik.touched.email && formik.errors.email && (
-                <div className="text-red-600 text-sm">
-                  {formik.errors.email}
-                </div>
-              )}
             </div>
 
             <div>
