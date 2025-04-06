@@ -2,9 +2,11 @@ const { User } = require("../models");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const { oauth2Client } = require("../utils/googleConfig");
 const axios = require("axios");
+const crypto = require("crypto");
+const { Op } = require("sequelize");
+
 const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
   const emailLower = email.toLowerCase();
@@ -81,13 +83,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -97,25 +92,35 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const resetToken = crypto.randomBytes(32).toString("hex");
 
     await user.update({
       resetToken,
-      resetTokenExpiry: Date.now() + 3600000,
+      resetTokenExpiry: Date.now() + 2 * 60 * 1000,
     });
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    console.log("Reset Url", resetUrl);
-    await transporter.sendMail({
-      to: email,
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    console.log("Reset URL:", resetUrl);
+
+    const brevoPayload = {
+      sender: {
+        name: "To-Do List App",
+        email: "zohaibbinashraaf@gmail.com",
+      },
+      to: [{ email }],
       subject: "Password Reset Request",
-      html: `
+      htmlContent: `
         <p>You requested a password reset.</p>
         <p>Click this <a href="${resetUrl}">link</a> to reset your password.</p>
         <p>This link will expire in 1 hour.</p>
       `,
+    };
+
+    await axios.post("https://api.brevo.com/v3/smtp/email", brevoPayload, {
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": process.env.BREVO_KEY,
+      },
     });
 
     res.json({
@@ -123,8 +128,43 @@ const forgotPassword = async (req, res) => {
         "If your email is registered, you will receive a password reset link shortly.",
     });
   } catch (error) {
-    console.error("Password reset error:", error);
+    console.error("Password reset error:", error.response?.data || error);
     res.status(500).json({ message: "Error processing request" });
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Token and new password are required." });
+    }
+
+    const user = await User.findOne({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: { [Op.gt]: Date.now() },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await user.update({
+      password: hashedPassword,
+      resetToken: null,
+      resetTokenExpiry: null,
+    });
+
+    res.json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Something went wrong." });
   }
 };
 const getUserAccount = async (req, res) => {
@@ -299,9 +339,10 @@ const googleLogin = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
   googleLogin,
   getUserAccount,
   updateUserAccount,
   updatePassword,
-  forgotPassword,
 };
