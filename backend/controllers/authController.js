@@ -11,6 +11,7 @@ const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
   const emailLower = email.toLowerCase();
   const username = fullName.toLowerCase();
+  console.log("Email", emailLower, username);
 
   try {
     const userExists = await User.findOne({ where: { email: emailLower } });
@@ -31,7 +32,7 @@ const registerUser = async (req, res) => {
       username,
       email: emailLower,
       password,
-      type: "local",
+      userType: "local",
     });
 
     res

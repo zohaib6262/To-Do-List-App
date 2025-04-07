@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       resetToken: {
         type: DataTypes.STRING,
@@ -69,12 +69,12 @@ module.exports = (sequelize, DataTypes) => {
       userProfile: {
         type: DataTypes.STRING,
         defaultValue: null,
-        allowNull: false,
+        allowNull: true,
       },
 
       userType: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         defaultValue: "default",
       },
     },
