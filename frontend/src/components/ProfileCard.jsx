@@ -62,10 +62,9 @@ const ProfileCard = () => {
       {loading && <div className="text-lg">Loading...</div>}{" "}
       {/* Loading message */}
       {error && <div className="text-red-500">{error}</div>}{" "}
-      {/* Error message */}
-      {formData.userProfile ? (
+      {formData?.userProfile ? (
         <img
-          src={`${formData.userProfile.trim()}`}
+          src={`${formData?.userProfile.trim()}`}
           alt="Profile"
           className="w-20 h-20 rounded-full border-2 border-pink-500 mb-4"
         />

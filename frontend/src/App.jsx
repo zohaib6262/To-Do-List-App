@@ -11,7 +11,6 @@ import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import TodoDashboard from "./screens/TodoDashboard";
 import Settings from "./screens/Settings";
-import Notifications from "./screens/Notifications";
 import ForgotPassword from "./screens/ForgotPassword";
 import ResetPassword from "./screens/ResetPassword";
 import AccountSettings from "./screens/AccountSettings";
@@ -39,7 +38,6 @@ const App = () => {
           <Route path="settings" element={<Settings />} />
           <Route path="settings/account" element={<AccountSettings />} />
           <Route path="settings/password" element={<PasswordSettings />} />
-          <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
     </Router>
