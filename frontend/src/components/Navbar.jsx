@@ -17,6 +17,18 @@ const Navbar = ({ toggleProfileCard }) => {
             Todo Dashboard
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/hotelForm"
+            className={({ isActive }) =>
+              isActive
+                ? "text-indigo-500 font-semibold"
+                : "text-white hover:text-indigo-300"
+            }
+          >
+            Hotel Form
+          </NavLink>
+        </li>
       </ul>
       <ul className="flex space-x-6">
         <li

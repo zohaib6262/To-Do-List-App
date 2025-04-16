@@ -100,7 +100,7 @@ const forgotPassword = async (req, res) => {
       resetTokenExpiry: Date.now() + 2 * 60 * 1000,
     });
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `http://localhost/reset-password/${resetToken}`;
     console.log("Reset URL:", resetUrl);
 
     const brevoPayload = {

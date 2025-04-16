@@ -17,7 +17,7 @@ const sendWelcomeEmail = async (email, todo) => {
       },
     ],
     subject: "Overdue todo",
-    htmlContent: `<html><body><h1>Please! Completed your todo.</h1></body></html>`,
+    htmlContent: `<html><body><h1>Please! Completed your todo. changes hogyi hain yeah nai</h1></body></html>`,
   };
   try {
     const response = await axios.post(url, emailData, {

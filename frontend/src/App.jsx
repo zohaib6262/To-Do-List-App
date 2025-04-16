@@ -15,6 +15,7 @@ import ForgotPassword from "./screens/ForgotPassword";
 import ResetPassword from "./screens/ResetPassword";
 import AccountSettings from "./screens/AccountSettings";
 import PasswordSettings from "./screens/PasswordSettings";
+import HotelForm from "./screens/HotelForm";
 
 const App = () => {
   const { token } = useAuth();
@@ -35,6 +36,8 @@ const App = () => {
 
         <Route path="/" element={token ? <Layout /> : <Navigate to="/login" />}>
           <Route index element={<TodoDashboard />} />
+          <Route path="hotelForm" element={<HotelForm />} />
+
           <Route path="settings" element={<Settings />} />
           <Route path="settings/account" element={<AccountSettings />} />
           <Route path="settings/password" element={<PasswordSettings />} />
