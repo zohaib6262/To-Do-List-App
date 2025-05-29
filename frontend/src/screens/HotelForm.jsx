@@ -107,3 +107,55 @@ const HotelForm = () => {
 };
 
 export default HotelForm;
+// await page.type("#first_name", "Zohaib");
+//   await page.type("#last_name", "Ashraf");
+//   await page.type("#email", "zohaibbinashraaf@gmail.com");
+//   await page.type("#phone", "03123456789");
+
+//   const filePathResume = path.resolve(__dirname, "resume.pdf");
+//   const uploadInputResume = await page.$("#resume");
+//   await uploadInputResume.uploadFile(filePathResume);
+
+//   const coverLetterPath = path.resolve(__dirname, "cover_letter.pdf");
+//   const coverLetterInput = await page.$("#cover_letter");
+//   await coverLetterInput.uploadFile(coverLetterPath);
+
+//   await page.type("#question_12496666004", "Pakistan");
+//   await page.type("#question_12496667004", "15000");
+
+//   await page.click("#question_12496665004");
+//   await page.keyboard.type("No");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496668004\\[\\]");
+//   await page.keyboard.type("1-2 years");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496669004");
+//   await page.keyboard.type("1-2 years");
+//   await page.keyboard.press("Enter");
+//   await page.click("#question_12496670004\\[\\]");
+//   await page.keyboard.type("08:00 - 16:30");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496671004");
+//   await page.keyboard.type("Yes");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496672004");
+//   await page.keyboard.type("Immediately");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496673004");
+//   await page.keyboard.type("a. $160");
+//   await page.keyboard.press("Enter");
+
+//   await page.click("#question_12496674004");
+//   await page.keyboard.type(
+//     "Yes I have, and my setup matches or exceeds requirements"
+//   );
+//   await page.keyboard.press("Enter");
+
+//   await page.type("#question_12496675004", "Job Board");
+
+//   await page.click('button[type="submit"]');
