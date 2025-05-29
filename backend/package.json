@@ -18,6 +18,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "gologin": "^2.1.19",
     "google-auth-library": "^9.15.1",
     "googleapis": "^148.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -28,6 +29,7 @@
     "nodemon": "^3.1.9",
     "pg": "^8.14.1",
     "puppeteer": "^24.6.1",
+    "puppeteer-core": "^24.6.1",
     "sequelize": "^6.37.6",
     "sequelize-cli": "^6.6.2"
   }
